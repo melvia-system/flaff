@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Flaff {
+  uuid          String  @id @default(uuid())
+  title         String
+  ownerLink     String
+  ownerPassword String?
+  guestLink     String
+  guestPassword String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+
+  files          File[]
+}
+
+// files is many to one with flaff
+model File {
+  uuid      String   @id @default(uuid())
+  flaffUuid String
+  name      String
+  size      Int
+  type      String
+  extension String
+  mimeType  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  flaff     Flaff    @relation(fields: [flaffUuid], references: [uuid])
+}

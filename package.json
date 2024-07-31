@@ -1,0 +1,40 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^8.4.1",
+    "@iconify-json/game-icons": "^1.1.9",
+    "@iconify/json": "^2.2.232",
+    "@nuxtjs/tailwindcss": "^6.12.1",
+    "@prisma/nuxt": "^0.0.34",
+    "@types/formidable": "^3.4.5",
+    "@types/uuid": "^10.0.0",
+    "better-sqlite3": "^11.1.2",
+    "formidable": "^3.5.1",
+    "h3-formidable": "^1.0.0",
+    "highlight.js": "^11.10.0",
+    "monaco-editor": "^0.50.0",
+    "monaco-editor-vue3": "^0.1.10",
+    "nuxt": "^3.12.4",
+    "object-to-formdata": "^4.5.1",
+    "parse-nested-form-data": "^1.0.0",
+    "prisma": "^5.17.0",
+    "sass": "^1.77.8",
+    "unstorage": "^1.10.2",
+    "uuid": "^10.0.0",
+    "vue": "latest",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@nuxt/ui": "npm:@nuxt/ui-edge@latest",
+    "@prisma/client": "^5.17.0"
+  }
+}
