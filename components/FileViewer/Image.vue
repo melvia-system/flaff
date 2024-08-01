@@ -50,7 +50,7 @@ onMounted(() => {
     :is-mime-readable="true"
     mimeType="image/*"
     :flaff="flaff"
-    @flaff-updated="() => $emit('flaffUpdated')"
+    @flaff-updated="(...args: any) => $emit('flaffUpdated', ...args)"
   >
     <div class="flex-1 flex justify-center items-center">
       <div v-show="!isLoading" class="flex-1 flex justify-center items-center">

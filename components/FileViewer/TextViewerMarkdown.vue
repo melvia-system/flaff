@@ -8,9 +8,80 @@ const props = defineProps({
   },
 })
 
+const emits = defineEmits(['changeFileByName'])
+
+const $route = useRoute()
 const displayData = ref<string>('')
+const extractAndProcessLinks = (html: string) => {
+  // return html
+  // Regex untuk menemukan semua tag <a> dan mengambil nilai href
+  const regex = /<a\s+[^>]*href=["']([^"']*)["'][^>]*>/gi;
+  let match;
+  const hrefs = [];
+
+  // Loop untuk menemukan semua kecocokan dan ekstrak href
+  while ((match = regex.exec(html)) !== null) {
+    hrefs.push({
+      original: match[1],
+      fullMatch: match[0], // Tag lengkap untuk penggantian
+    });
+  }
+
+  // Dapatkan host saat ini
+  const currentHost = window.location.origin + $route.fullPath + '/';
+  console.log(currentHost)
+
+  // Ganti URL jika tidak memiliki host
+  const replacedHtml = hrefs.reduce((acc, { original, fullMatch }) => {
+    let newHref = original;
+    
+    // Periksa apakah href sudah memiliki host
+    if (!/^https?:\/\//i.test(newHref)) {
+      // newHref = new URL(original, currentHost).href;
+      newHref = currentHost + `?file=${original}`;
+    }
+
+    // Ganti href dalam HTML
+    return acc.replace(fullMatch, fullMatch.replace(original, newHref));
+  }, html);
+
+  return replacedHtml;
+}
 const parsed = async (val: string) => {
-  displayData.value = await marked(val)
+  let data = await marked(val)
+  displayData.value = extractAndProcessLinks(data)
+  nextTick(() => {
+    const links = document.querySelector('.markdown-body')?.querySelectorAll('a') || [];
+    console.log('nextTick', links)
+    links.forEach(link => {
+      const href = link.getAttribute('href');
+      if (href) {
+        if (href.startsWith(window.location.origin)) {
+          link.addEventListener('click', (event) => {
+            event.preventDefault()
+
+            // parse to url with query
+            const url = new URL(href)
+            const file = url.searchParams.get('file')
+            if (file) {
+              emits('changeFileByName', file)
+            }
+          });
+        }
+        // check if href is not external (with http or https)
+        // if (!/^https?:\/\//i.test(href)) {
+        //   link.addEventListener('click', (event) => {
+        //     event.preventDefault();
+        //     console.log('clicked', href)
+        //   });
+        // }
+        // link.addEventListener('click', (event) => {
+        //   event.preventDefault();
+        //   console.log('clicked', href)
+        // });
+      }
+    });
+  })
 }
 watch(() => props.data, async (val) => {
   await parsed(val)
@@ -21,8 +92,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="markdown-body flex-1 px-6">
-    <div v-html="displayData"></div>
+  <div class="flex-1 bg-[#0d1117]">
+    <div class="markdown-body px-6 min-h-full">
+      <div v-html="displayData"></div>
+    </div>
   </div>
 </template>
 

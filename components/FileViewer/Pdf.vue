@@ -24,7 +24,7 @@ const emits = defineEmits(['flaffUpdated'])
     :is-mime-readable="true"
     :flaff="props.flaff"
     mimeType="application/pdf"
-    @flaff-updated="() => $emit('flaffUpdated')"
+    @flaff-updated="(...args: any) => $emit('flaffUpdated', ...args)"
   >
     <div class="flex-1 flex justify-center items-center">
       <!-- embed pdf  -->

@@ -22,7 +22,7 @@ const props = defineProps({
   },
 })
 
-const emits = defineEmits(['flaffUpdated'])
+const emits = defineEmits(['flaffUpdated', 'changeFileByName'])
 
 const EXT_READABLE_RESIZE_PATTERN: {
   [key: string]: string
@@ -97,9 +97,10 @@ const ForceViewerComponent = computed(() => {
     :item="item"
     :mimeType="getMimeType"
     :flaff="flaff"
-    @flaff-updated="() => {
-      $emit('flaffUpdated')
+    @flaff-updated="(...args: any) => {
+      $emit('flaffUpdated', ...args)
     }"
+    @changeFileByName="(name: string) => $emit('changeFileByName', name)"
   />
   <FileViewerContainer
     v-else
@@ -109,9 +110,9 @@ const ForceViewerComponent = computed(() => {
     :is-mime-readable="isMimeReadable"
     :item="props.item"
     :mimeType="getMimeType"
-    @flaff-updated="() => {
+    @flaff-updated="(...args: any) => {
       console.log('flaff-updated')
-      $emit('flaffUpdated')
+      $emit('flaffUpdated', ...args)
     }"
   >
     <div class="flex-1 flex justify-center items-center">

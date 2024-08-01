@@ -24,7 +24,7 @@ const emits = defineEmits(['flaffUpdated'])
     :is-mime-readable="true"
     :flaff="flaff"
     mimeType="text/*"
-    @flaff-updated="() => $emit('flaffUpdated')"
+    @flaff-updated="(...args: any) => $emit('flaffUpdated', ...args)"
   >
     <div>default</div>
   </FileViewerContainer>

@@ -31,6 +31,8 @@ const props = defineProps({
 
 const emits = defineEmits(['flaffUpdated'])
 
+const $toast = useToast()
+
 const readeableSize = computed(() => {
   const size = props.item.size // in bytes
   if (size < 1024) return `${size} B`
@@ -85,6 +87,26 @@ const rename = async () => {
   console.log('rename', props.item.name)
   emits('flaffUpdated')
 }
+
+const deleteFile = async () => {
+  try {
+    const res = await $fetch(`/api/flaff/${props.flaffId}/file/${props.item.uuid}`, {
+      method: 'DELETE',
+    })
+    console.log('res', res)
+    emits('flaffUpdated', true)
+    $toast.add({
+      title: 'Success',
+      description: 'File deleted',
+    })
+  } catch (error) {
+    console.error('error', error)
+    $toast.add({
+      title: 'Error',
+      description: 'Failed to delete file',
+    })
+  }
+}
 </script>
 
 <template>
@@ -124,6 +146,13 @@ const rename = async () => {
                     nameMode = 'edit'
                   },
                 },
+                {
+                  label: 'Delete',
+                  icon: 'i-ph-trash',
+                  click: () => {
+                    deleteFile()
+                  },
+                }
               ]
             ]"
             mode="hover"

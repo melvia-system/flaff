@@ -24,10 +24,13 @@ useSeoMeta({
   description: 'Flaff is a simple file sharing service',
 })
 
-// const items = ref<Item[]>([])
-const items = computed<Item[]>(() => {
-  return data.value?.data?.files || []
+const items = ref<Item[]>([ ...data.value?.data.files || [] ])
+watch(data, () => {
+  items.value = [ ...data.value?.data.files || [] ]
 })
+// const items = computed<Item[]>(() => {
+//   return data.value?.data?.files || []
+// })
 const selectedItem = ref<Item | null>(null)
 
 const ICONS_ITEMS_LIST: {
@@ -188,9 +191,23 @@ const $modalSetting = (() => {
   }
 })()
 
-const flaffUpdated = () => {
+const flaffUpdated = (reset = false) => {
   console.log('flaff updated')
   refresh()
+  if (reset) {
+    if (data.value?.data?.files?.length) {
+      selectItem(data.value?.data?.files[0])
+    }
+  }
+}
+
+const changeFileByName = (name: string) => {
+  console.log('change file by name', name)
+  const files = data.value?.data?.files || []
+  const find = files.find((file) => file.name === name)
+  if (find) {
+    selectItem(find)
+  }
 }
 </script>
 
@@ -254,7 +271,7 @@ const flaffUpdated = () => {
                   </div>
                 </div>
                 <div>
-                  <template v-for="(item, i) in items" :key="item.uuid">
+                  <template v-for="(item, i) in items" :key="item.uuid + i">
                     <UButton
                       class="w-full text-left truncate"
                       :label="item.name"
@@ -278,6 +295,7 @@ const flaffUpdated = () => {
                   :item="selectedItem"
                   :flaff="data?.data"
                   @flaff-updated="flaffUpdated"
+                  @changeFileByName="(name) => changeFileByName(name)"
                 />
               </ClientOnly>
             </div>

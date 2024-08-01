@@ -33,7 +33,7 @@ const props = defineProps({
   },
 })
 
-const emits = defineEmits(['flaffUpdated'])
+const emits = defineEmits(['flaffUpdated', 'changeFileByName'])
 
 const datatext = ref<string>('')
 const language = ref<string>()
@@ -148,7 +148,7 @@ const copy = async () => {
     :is-mime-readable="true"
     mimeType="text/*"
     :flaff="flaff"
-    @flaff-updated="() => $emit('flaffUpdated')"
+    @flaff-updated="(...args: any) => $emit('flaffUpdated', ...args)"
   >
     <template #header-actions>
       <UButton
@@ -187,6 +187,7 @@ const copy = async () => {
           :flaff="flaff"
           :mimeType="props.mimeType"
           :data="datatext"
+          @changeFileByName="(name: string) => $emit('changeFileByName', name)"
         />
       </template>
       <!-- <MonacoEditor
