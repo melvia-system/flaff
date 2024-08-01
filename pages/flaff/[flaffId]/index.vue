@@ -140,6 +140,7 @@ const $modalSetting = (() => {
   const schema = z.object({
     title: z.string(),
     publicPassword: z.string().optional(),
+    ownerPassword: z.string().optional(),
   })
 
   type Schema = z.output<typeof schema>
@@ -147,6 +148,13 @@ const $modalSetting = (() => {
   const state = reactive<Schema>({
     title: data.value?.data?.title || '',
     publicPassword: data.value?.data?.guestPassword || '',
+    ownerPassword: data.value?.data?.ownerPassword || '',
+  })
+
+  watch(data, () => {
+    state.title = data.value?.data?.title || ''
+    state.publicPassword = data.value?.data?.guestPassword || ''
+    state.ownerPassword = data.value?.data?.ownerPassword || ''
   })
 
   async function onSubmit (event: FormSubmitEvent<Schema>) {
@@ -154,12 +162,15 @@ const $modalSetting = (() => {
       const body: {
         title: string,
         guestPassword?: string,
+        ownerPassword?: string,
       } = {
         title: event.data.title,
         guestPassword: event.data.publicPassword,
+        ownerPassword: event.data.ownerPassword,
       }
       // check if the password is empty, remove whitespace first
       if (!body.guestPassword?.trim()) delete body.guestPassword
+      if (!body.ownerPassword?.trim()) delete body.ownerPassword
 
       const res = await $fetch(`/api/flaff/${data.value?.data.uuid}`, {
         method: 'PUT',
@@ -315,6 +326,10 @@ const changeFileByName = (name: string) => {
 
             <UFormGroup label="Public Password" name="publicPassword">
               <UInput v-model="$modalSetting.state.publicPassword" type="text" />
+            </UFormGroup>
+
+            <UFormGroup label="Owner Password" name="ownerPassword">
+              <UInput v-model="$modalSetting.state.ownerPassword" type="text" />
             </UFormGroup>
 
             <div class="flex gap-2 justify-end">

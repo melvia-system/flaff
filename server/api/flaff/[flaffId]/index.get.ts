@@ -16,10 +16,19 @@ export default defineEventHandler(async (event) => {
  const flaff = await findFlaffByMergeId(flaffId, true)
 
   // check password
-  if (flaff.guestPassword && flaff.guestPassword !== query.password && (flaffId !== flaff.ownerLink)) throw createError({
+  if (
+    (flaff.guestPassword)
+    && (flaff.guestPassword !== query.password)
+    && (flaffId !== flaff.ownerLink)
+  ) throw createError({
     message: 'Password is incorrect',
     status: 401,
   })
+  if (flaff.ownerPassword && flaffId === flaff.ownerLink && flaff.ownerPassword !== query.password) throw createError({
+    message: 'Password is incorrect',
+    status: 401,
+  })
+
 
   // check owner or not
   let isOwner = false

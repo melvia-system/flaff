@@ -137,6 +137,7 @@ const deleteFile = async () => {
         <div class="flex gap-2">
           <slot name="header-actions" />
           <UDropdown
+            v-if="props.flaff.isOwner"
             :items="[
               [
                 {
@@ -184,7 +185,7 @@ const deleteFile = async () => {
           </div>
           <div class="pl-2 flex items-center gap-1 text-sm">
             <UIcon name="i-ph-file-duotone" />
-            {{ item.mimeType }}
+            {{ mimeType }}
           </div>
           <slot name="footer-bar" />
         </div>

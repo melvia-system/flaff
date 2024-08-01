@@ -13,14 +13,15 @@ import 'consola/core';
 
 const schema = z.object({
   title: z.string(),
-  guestPassword: z.string().optional()
+  guestPassword: z.string().optional(),
+  ownerPassword: z.string().optional()
 });
 const ParamsSchema = z.object({
   flaffId: z.string()
 });
 const index_put = defineEventHandler(async (event) => {
   const { flaffId } = await getValidatedRouterParams(event, ParamsSchema.parse);
-  const { title, guestPassword } = await readValidatedBody(event, schema.parse);
+  const { title, guestPassword, ownerPassword } = await readValidatedBody(event, schema.parse);
   const flaff = await findFlaffByMergeId(flaffId, true);
   await prisma.flaff.update({
     where: {
@@ -28,7 +29,8 @@ const index_put = defineEventHandler(async (event) => {
     },
     data: {
       title,
-      guestPassword
+      guestPassword,
+      ownerPassword
     }
   });
   return {

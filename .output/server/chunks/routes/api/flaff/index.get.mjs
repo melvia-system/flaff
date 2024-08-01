@@ -26,6 +26,11 @@ const index_get = defineEventHandler(async (event) => {
       message: "Password is incorrect",
       status: 401
     });
+  if (flaff.ownerPassword && flaffId === flaff.ownerLink && flaff.ownerPassword !== query.password)
+    throw createError({
+      message: "Password is incorrect",
+      status: 401
+    });
   let isOwner = false;
   if (flaff.ownerLink === flaffId)
     isOwner = true;

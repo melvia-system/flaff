@@ -4,6 +4,7 @@ import { prisma } from "@/server/lib/db"
 const schema = z.object({
   title: z.string(),
   guestPassword: z.string().optional(),
+  ownerPassword: z.string().optional(),
 })
 
 const ParamsSchema = z.object({
@@ -12,7 +13,7 @@ const ParamsSchema = z.object({
 
 export default defineEventHandler(async (event) => {
   const { flaffId } = await getValidatedRouterParams(event, ParamsSchema.parse)
-  const { title, guestPassword } = await readValidatedBody(event, schema.parse)
+  const { title, guestPassword, ownerPassword } = await readValidatedBody(event, schema.parse)
 
   const flaff = await findFlaffByMergeId(flaffId, true)
 
@@ -23,6 +24,7 @@ export default defineEventHandler(async (event) => {
     data: {
       title,
       guestPassword,
+      ownerPassword,
     },
   })
 
