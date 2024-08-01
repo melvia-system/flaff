@@ -1,4 +1,4 @@
-import { d as defineEventHandler, g as getValidatedRouterParams } from '../../../runtime.mjs';
+import { d as defineEventHandler, g as getValidatedRouterParams, b as getQuery, c as createError } from '../../../runtime.mjs';
 import { z } from 'zod';
 import { f as findFlaffByMergeId } from '../../../_/flaff.mjs';
 import 'node:http';
@@ -14,9 +14,18 @@ import 'consola/core';
 const ParamsSchema = z.object({
   flaffId: z.string()
 });
+z.object({
+  password: z.string().optional()
+});
 const index_get = defineEventHandler(async (event) => {
   const { flaffId } = await getValidatedRouterParams(event, ParamsSchema.parse);
+  const query = getQuery(event);
   const flaff = await findFlaffByMergeId(flaffId, true);
+  if (flaff.guestPassword && flaff.guestPassword !== query.password && flaffId !== flaff.ownerLink)
+    throw createError({
+      message: "Password is incorrect",
+      status: 401
+    });
   let isOwner = false;
   if (flaff.ownerLink === flaffId)
     isOwner = true;

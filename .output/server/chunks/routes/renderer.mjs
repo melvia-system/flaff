@@ -1,5 +1,5 @@
 import process from 'node:process';globalThis._importMeta_=globalThis._importMeta_||{url:"file:///_entry.js",env:process.env};import { getRequestDependencies, getPreloadLinks, getPrefetchLinks, createRenderer } from 'vue-bundle-renderer/runtime';
-import { u as useRuntimeConfig, e as eventHandler, s as setResponseHeader, b as send, h as getResponseStatus, i as setResponseStatus, j as useNitroApp, k as setResponseHeaders, l as joinRelativeURL, m as getQuery, c as createError, n as getRouteRules, o as getResponseStatusText } from '../runtime.mjs';
+import { u as useRuntimeConfig, h as eventHandler, s as setResponseHeader, i as send, j as getResponseStatus, k as setResponseStatus, l as useNitroApp, m as setResponseHeaders, n as joinRelativeURL, b as getQuery, c as createError, o as getRouteRules, q as getResponseStatusText } from '../runtime.mjs';
 import { stringify, uneval } from 'devalue';
 import { propsToString, renderSSRHead } from '@unhead/ssr';
 import { createServerHead as createServerHead$1, CapoPlugin } from 'unhead';

@@ -59,7 +59,7 @@ const download = async () => {
     class="flex-1 flex flex-col"
     :ui="{
       body: {
-        base: 'flex-1 flex',
+        base: 'flex-1 flex overflow-y-auto',
         padding: 'p-0 sm:p-0',
       },
     }"
@@ -71,7 +71,7 @@ const download = async () => {
           <span>{{ item.name }}</span>
           <span v-if="forceViewerMimeType">[{{ forceViewerMimeType }}]</span>
         </div>
-        <div>
+        <div class="flex gap-2">
           <slot name="header-actions" />
         </div>
       </div>
@@ -99,8 +99,10 @@ const download = async () => {
             <UIcon name="i-ph-file-duotone" />
             {{ item.mimeType }}
           </div>
+          <slot name="footer-bar" />
         </div>
-        <div>
+        <div class="flex gap-2">
+          <slot name="footer-actions" />
           <UButton
             color="white"
             label="Download"

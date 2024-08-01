@@ -5,7 +5,8 @@ export default defineNuxtConfig({
   ssr: false,
 
   modules: [
-    '@nuxt/ui'
+    '@nuxt/ui',
+    'nuxt-monaco-editor'
   ],
 
   nitro: {
@@ -13,12 +14,4 @@ export default defineNuxtConfig({
       `~/server/plugins/db.ts`
     ]
   },
-
-  vite: {
-    optimizeDeps: {
-      include: [
-        'monaco-editor'
-      ]
-    }
-  }
 })

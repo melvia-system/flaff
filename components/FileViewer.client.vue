@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import {
-  FileViewerImage,
-  FileViewerPdf,
-  FileViewerText,
-  FileViewerDefault,
+  LazyFileViewerImage,
+  LazyFileViewerPdf,
+  LazyFileViewerText,
+  LazyFileViewerDefault,
 } from '#components'
 
 const props = defineProps({
@@ -27,6 +27,16 @@ const EXT_READABLE_RESIZE_PATTERN: {
   ps: 'text/pinescript',
   pinescript: 'text/pinescript',
   sav: 'text/sav',
+  ts: 'text/typescript',
+  tsx: 'text/typescript',
+  js: 'text/javascript',
+  jsx: 'text/javascript',
+  json: 'text/json',
+  yml: 'text/yaml',
+  yaml: 'text/yaml',
+  md: 'text/markdown',
+  markdown: 'text/markdown',
+  csv: 'text/csv',
 }
 const getMimeType = computed(() => {
   const ext = props.item.extension
@@ -48,9 +58,9 @@ const isMimeReadable = computed(() => {
 })
 
 const ViewerComponents = {
-  'image/*': FileViewerImage,
-  'application/pdf': FileViewerPdf,
-  'text/*': FileViewerText,
+  'image/*': LazyFileViewerImage,
+  'application/pdf': LazyFileViewerPdf,
+  'text/*': LazyFileViewerText,
 }
 
 const findBypattern = (pattern: string) => {
@@ -60,7 +70,7 @@ const findBypattern = (pattern: string) => {
   return findComponent?.[1]
 }
 const ViewerComponent = computed(() => {
-  const defaultComponent = FileViewerDefault
+  const defaultComponent = LazyFileViewerDefault
   return findBypattern(getMimeType.value) || defaultComponent
 })
 

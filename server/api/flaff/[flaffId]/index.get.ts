@@ -1,15 +1,25 @@
 import { z } from "zod"
-import { prisma } from "@/server/lib/db"
 import { findFlaffByMergeId, FlaffWithFiles } from "~/server/utils/flaff";
 
 const ParamsSchema = z.object({
   flaffId: z.string(),
-});
+})
+
+const QuerySchema = z.object({
+  password: z.string().optional(),
+})
 
 export default defineEventHandler(async (event) => {
   const { flaffId } = await getValidatedRouterParams(event, ParamsSchema.parse)
+  const query = getQuery(event)
 
  const flaff = await findFlaffByMergeId(flaffId, true)
+
+  // check password
+  if (flaff.guestPassword && flaff.guestPassword !== query.password && (flaffId !== flaff.ownerLink)) throw createError({
+    message: 'Password is incorrect',
+    status: 401,
+  })
 
   // check owner or not
   let isOwner = false
