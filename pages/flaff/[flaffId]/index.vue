@@ -5,6 +5,11 @@ import { FetchError} from 'ofetch'
 import { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
 
+useSeoMeta({
+  title: 'Flaff',
+  description: 'Flaff is a simple file sharing service',
+})
+
 const toast = useToast()
 
 const password = ref<string>('')
@@ -17,6 +22,12 @@ const { data, refresh, error } = await useFetch(`/api/flaff/${flaffId}`, {
 })
 const isOwner = computed(() => {
   return data.value?.data?.isOwner || false
+})
+watch(data, (newVal) => {
+  useSeoMeta({
+    title: newVal?.data?.title + ' | Flaff',
+    description: 'Flaff is a simple file sharing service',
+  })
 })
 
 // const items = ref<Item[]>([])
@@ -222,9 +233,9 @@ const $modalSetting = (() => {
           <div class="flex-1 flex gap-4 overflow-hidden">
             <div class="max-w-[300px] w-[300px] flex">
               <UCard class="max-w-[300px] w-[300px] flex-1">
-                <div class="flex justify-between">
+                <div class="flex justify-between mb-4">
                   <div class="font-semibold text-lg">Explorer</div>
-                  <div v-if="isOwner" class="mb-4 flex gap-2 justify-end">
+                  <div v-if="isOwner" class="flex gap-2 justify-end">
                     <UButton
                       icon="i-ph-plus"
                       @click="triggerUploadFile"
