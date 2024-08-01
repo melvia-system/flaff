@@ -67,7 +67,7 @@ const handleUploadFile = async (event: Event) => {
 
   // validation size
   // max size is 4 mega bytes
-  const maxSize = 4 * 1024 * 1024 // 4 MB
+  const maxSize = 10 * 1024 * 1024 // 4 MB
   if (file.size > maxSize) {
     toast.add({
       title: 'Error',
@@ -187,6 +187,11 @@ const $modalSetting = (() => {
     isLoading,
   }
 })()
+
+const flaffUpdated = () => {
+  console.log('flaff updated')
+  refresh()
+}
 </script>
 
 <template>
@@ -272,6 +277,7 @@ const $modalSetting = (() => {
                   :flaff-id="flaffId"
                   :item="selectedItem"
                   :flaff="data?.data"
+                  @flaff-updated="flaffUpdated"
                 />
               </ClientOnly>
             </div>

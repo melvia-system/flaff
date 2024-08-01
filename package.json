@@ -22,6 +22,7 @@
     "h3-formidable": "^1.0.0",
     "highlight.js": "^11.10.0",
     "marked": "^13.0.3",
+    "mime": "^4.0.4",
     "monaco-editor": "^0.50.0",
     "monaco-themes": "^0.4.4",
     "nuxt": "^3.12.4",
@@ -32,6 +33,7 @@
     "sass": "^1.77.8",
     "unstorage": "^1.10.2",
     "uuid": "^10.0.0",
+    "video.js": "^8.17.1",
     "vue": "latest",
     "zod": "^3.23.8"
   },

@@ -13,6 +13,8 @@ const props = defineProps({
     required: true,
   },
 })
+
+const emits = defineEmits(['flaffUpdated'])
 </script>
 
 <template>
@@ -22,6 +24,7 @@ const props = defineProps({
     :is-mime-readable="true"
     :flaff="props.flaff"
     mimeType="application/pdf"
+    @flaff-updated="() => $emit('flaffUpdated')"
   >
     <div class="flex-1 flex justify-center items-center">
       <!-- embed pdf  -->

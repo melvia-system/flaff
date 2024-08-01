@@ -3,6 +3,7 @@ import {
   LazyFileViewerImage,
   LazyFileViewerPdf,
   LazyFileViewerText,
+  LazyFileViewerVideo,
   LazyFileViewerDefault,
 } from '#components'
 
@@ -20,6 +21,8 @@ const props = defineProps({
     required: true,
   },
 })
+
+const emits = defineEmits(['flaffUpdated'])
 
 const EXT_READABLE_RESIZE_PATTERN: {
   [key: string]: string
@@ -49,6 +52,7 @@ const MIME_READABLE_PATTERN = [
   'application/pdf',
   'text/*',
   'image/*',
+  'video/mp4',
 ]
 const isMimeReadable = computed(() => {
   const fileMimeType = getMimeType.value // ex: 'application/pdf'
@@ -61,6 +65,7 @@ const ViewerComponents = {
   'image/*': LazyFileViewerImage,
   'application/pdf': LazyFileViewerPdf,
   'text/*': LazyFileViewerText,
+  'video/mp4': LazyFileViewerVideo,
 }
 
 const findBypattern = (pattern: string) => {
@@ -92,6 +97,9 @@ const ForceViewerComponent = computed(() => {
     :item="item"
     :mimeType="getMimeType"
     :flaff="flaff"
+    @flaff-updated="() => {
+      $emit('flaffUpdated')
+    }"
   />
   <FileViewerContainer
     v-else
@@ -101,6 +109,10 @@ const ForceViewerComponent = computed(() => {
     :is-mime-readable="isMimeReadable"
     :item="props.item"
     :mimeType="getMimeType"
+    @flaff-updated="() => {
+      console.log('flaff-updated')
+      $emit('flaffUpdated')
+    }"
   >
     <div class="flex-1 flex justify-center items-center">
       <div class="flex flex-col justify-center items-center gap-1">

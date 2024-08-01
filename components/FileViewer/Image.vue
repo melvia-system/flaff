@@ -14,6 +14,9 @@ const props = defineProps({
   },
 })
 
+
+const emits = defineEmits(['flaffUpdated'])
+
 const imagePreview = ref<HTMLImageElement | null>(null)
 const isLoading = ref(true)
 const fetch = async () => {
@@ -47,6 +50,7 @@ onMounted(() => {
     :is-mime-readable="true"
     mimeType="image/*"
     :flaff="flaff"
+    @flaff-updated="() => $emit('flaffUpdated')"
   >
     <div class="flex-1 flex justify-center items-center">
       <div v-show="!isLoading" class="flex-1 flex justify-center items-center">

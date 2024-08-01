@@ -33,6 +33,8 @@ const props = defineProps({
   },
 })
 
+const emits = defineEmits(['flaffUpdated'])
+
 const datatext = ref<string>('')
 const language = ref<string>()
 const options = computed<monaco.editor.IEditorConstructionOptions>(() => ({
@@ -146,6 +148,7 @@ const copy = async () => {
     :is-mime-readable="true"
     mimeType="text/*"
     :flaff="flaff"
+    @flaff-updated="() => $emit('flaffUpdated')"
   >
     <template #header-actions>
       <UButton
@@ -163,7 +166,7 @@ const copy = async () => {
         label="Copy to clipboard"
       />
     </template>
-    <div class="flex flex-1 w-full h-full z-30">
+    <div class="flex flex-1 w-full h-full">
       <template v-if="tabCurrentSelected == 'editor'">
         <MonacoEditor
           v-model="datatext"

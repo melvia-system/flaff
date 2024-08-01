@@ -29,6 +29,8 @@ const props = defineProps({
   },
 })
 
+const emits = defineEmits(['flaffUpdated'])
+
 const readeableSize = computed(() => {
   const size = props.item.size // in bytes
   if (size < 1024) return `${size} B`
@@ -52,6 +54,37 @@ const download = async () => {
     console.error('error', error)
   }
 }
+
+const nameMode = ref<'view' | 'edit'>('view')
+watch(nameMode, (val) => {
+  if (val === 'edit') {
+    const dom = document.querySelector('.input-rename') as HTMLInputElement
+    dom?.focus()
+  }
+})
+const isRenameLoading = ref(false)
+const rename = async () => {
+  if (isRenameLoading.value) return
+  isRenameLoading.value = true
+  const temp = props.item.name
+  try {
+    const res = await $fetch(`/api/flaff/${props.flaff.uuid}/file/${props.item.uuid}/rename`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        name: props.item.name,
+      }),
+    })
+    nameMode.value = 'view'
+    console.log('res', res)
+  } catch (error) {
+    console.error('error', error)
+    props.item.name = temp
+  }
+  isRenameLoading.value = false
+
+  console.log('rename', props.item.name)
+  emits('flaffUpdated')
+}
 </script>
 
 <template>
@@ -68,11 +101,36 @@ const download = async () => {
       <div class="flex justify-between">
         <div class="flex items-center gap-2">
           <UIcon name="i-ph-file-duotone" />
-          <span>{{ item.name }}</span>
-          <span v-if="forceViewerMimeType">[{{ forceViewerMimeType }}]</span>
+          <span v-if="nameMode == 'view'" @dblclick="nameMode = 'edit'">{{ item.name }}</span>
+          <input
+            v-else
+            autofocus
+            v-model="item.name"
+            @blur="rename"
+            @keyup.enter="rename"
+            class="input-rename bg-transparent border-b border-gray-500"
+          />
+          <!-- <span v-if="forceViewerMimeType">[{{ forceViewerMimeType }}]</span> -->
         </div>
         <div class="flex gap-2">
           <slot name="header-actions" />
+          <UDropdown
+            :items="[
+              [
+                {
+                  label: 'Rename',
+                  icon: 'i-ph-pencil',
+                  click: () => {
+                    nameMode = 'edit'
+                  },
+                },
+              ]
+            ]"
+            mode="hover"
+            :popper="{ placement: 'bottom-end' }"
+          >
+            <UButton size="xs" icon="i-ph-dots-three-outline-vertical-thin" />
+          </UDropdown>
         </div>
       </div>
     </template>

@@ -13,6 +13,8 @@ const props = defineProps({
     required: true,
   },
 })
+
+const emits = defineEmits(['flaffUpdated'])
 </script>
 
 <template>
@@ -22,6 +24,7 @@ const props = defineProps({
     :is-mime-readable="true"
     :flaff="flaff"
     mimeType="text/*"
+    @flaff-updated="() => $emit('flaffUpdated')"
   >
     <div>default</div>
   </FileViewerContainer>
