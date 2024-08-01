@@ -92,9 +92,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex-1 bg-[#0d1117]">
-    <div class="markdown-body px-6 min-h-full">
-      <div v-html="displayData"></div>
+  <div class="flex-1">
+    <div class="bg-[#0d1117] py-2 px-6 min-h-full">
+      <div class="markdown-body" v-html="displayData"></div>
     </div>
   </div>
 </template>
@@ -650,6 +650,9 @@ onMounted(async () => {
 
 .markdown-body li+li {
   margin-top: .25em;
+}
+.markdown-body li {
+  list-style-type: disc;
 }
 
 .markdown-body dl {

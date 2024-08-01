@@ -127,8 +127,16 @@ const copyLink = (type: 'owner' | 'public') => async () => {
   }
 }
 
+const isLoaded = ref(false)
 onMounted(() => {
   if (data.value?.data?.files?.length) {
+    isLoaded.value = true
+    selectItem(data.value?.data?.files[0])
+  }
+})
+watch(data, () => {
+  if (data.value?.data?.files?.length && !isLoaded.value) {
+    isLoaded.value = true
     selectItem(data.value?.data?.files[0])
   }
 })
@@ -220,16 +228,27 @@ const changeFileByName = (name: string) => {
     selectItem(find)
   }
 }
+
+const { width } = useWindowSize()
+const isMobile = computed(() => {
+  return width.value < 768
+})
 </script>
 
 <template>
   <div class="w-full min-h-screen max-h-screen bg-slate-950 flex">
     <template v-if="!error && data?.data?.uuid">
       <UContainer class="flex-1 flex py-8">
-        <div class="flex flex-col gap-4 flex-1">
+        <div class="flex flex-col flex-1 gap-4">
           <UCard>
-            <div class="flex justify-between items-center">
-              <div>
+            <div
+              class="flex justify-between items-center"
+              :class="{
+                'flex-col items-center gap-2': isMobile,
+                'flex-row': !isMobile,
+              }"
+            >
+              <div :class="{ 'text-center': isMobile }">
                 <h2 class="font-semibold text-xl">{{ data?.data?.title }}</h2>
                 <p class="text-sm text-gray-400">{{ data?.data?.uuid }}</p>
               </div>
@@ -257,11 +276,25 @@ const changeFileByName = (name: string) => {
               </div>
             </div>
           </UCard>
-          <div class="flex-1 flex gap-4 overflow-hidden">
-            <div class="max-w-[300px] w-[300px] flex">
-              <UCard class="max-w-[300px] w-[300px] flex-1">
+          <div
+            class="flex-1 flex gap-4"
+            :class="{
+              'flex-col': isMobile,
+              'overflow-hidden': !isMobile,
+            }"
+          >
+            <div
+              class=""
+              :class="{
+                'flex-1 max-w-[300px] w-[300px]': !isMobile,
+                'w-full': isMobile,
+              }"
+            >
+              <UCard class="w-full flex-1">
                 <div class="flex justify-between mb-4">
-                  <div class="font-semibold text-lg">Explorer</div>
+                  <div class="font-semibold text-lg">
+                    Explorer
+                  </div>
                   <div v-if="isOwner" class="flex gap-2 justify-end">
                     <UButton
                       icon="i-ph-plus"

@@ -107,6 +107,11 @@ const deleteFile = async () => {
     })
   }
 }
+
+const { width } = useWindowSize()
+const isMobile = computed(() => {
+  return width.value < 768
+})
 </script>
 
 <template>
@@ -120,54 +125,64 @@ const deleteFile = async () => {
     }"
   >
     <template #header>
-      <div class="flex justify-between">
-        <div class="flex items-center gap-2">
-          <UIcon name="i-ph-file-duotone" />
-          <span v-if="nameMode == 'view'" @dblclick="nameMode = 'edit'">{{ item.name }}</span>
-          <input
-            v-else
-            autofocus
-            v-model="item.name"
-            @blur="rename"
-            @keyup.enter="rename"
-            class="input-rename bg-transparent border-b border-gray-500"
-          />
-          <!-- <span v-if="forceViewerMimeType">[{{ forceViewerMimeType }}]</span> -->
+      <div>
+        <div
+          class="flex justify-between"
+          :class="{
+            // 'flex-col items-center gap-2': isMobile,
+            // 'flex-row': !isMobile,
+          }"
+        >
+          <div class="flex items-center gap-2">
+            <UIcon name="i-ph-file-duotone" />
+            <span v-if="nameMode == 'view'" @dblclick="nameMode = 'edit'">{{ item.name }}</span>
+            <input
+              v-else
+              autofocus
+              v-model="item.name"
+              @blur="rename"
+              @keyup.enter="rename"
+              class="input-rename bg-transparent border-b border-gray-500"
+            />
+            <!-- <span v-if="forceViewerMimeType">[{{ forceViewerMimeType }}]</span> -->
+          </div>
+          <div class="flex gap-2">
+            <slot v-if="!isMobile" name="header-actions" />
+            <UDropdown
+              v-if="props.flaff.isOwner"
+              :items="[
+                [
+                  {
+                    label: 'Rename',
+                    icon: 'i-ph-pencil',
+                    click: () => {
+                      nameMode = 'edit'
+                    },
+                  },
+                  {
+                    label: 'Delete',
+                    icon: 'i-ph-trash',
+                    click: () => {
+                      deleteFile()
+                    },
+                  }
+                ]
+              ]"
+              :popper="{ placement: 'bottom-end' }"
+            >
+              <UButton size="xs" icon="i-ph-dots-three-outline-vertical-thin" />
+            </UDropdown>
+          </div>
         </div>
-        <div class="flex gap-2">
+        <div v-if="isMobile" class="flex gap-2">
           <slot name="header-actions" />
-          <UDropdown
-            v-if="props.flaff.isOwner"
-            :items="[
-              [
-                {
-                  label: 'Rename',
-                  icon: 'i-ph-pencil',
-                  click: () => {
-                    nameMode = 'edit'
-                  },
-                },
-                {
-                  label: 'Delete',
-                  icon: 'i-ph-trash',
-                  click: () => {
-                    deleteFile()
-                  },
-                }
-              ]
-            ]"
-            mode="hover"
-            :popper="{ placement: 'bottom-end' }"
-          >
-            <UButton size="xs" icon="i-ph-dots-three-outline-vertical-thin" />
-          </UDropdown>
         </div>
       </div>
     </template>
 
     <div v-if="isLoading" class="flex-1 flex justify-center items-center">
       <div class="flex items-center gap-1">
-        <span>Loading Image Preview</span>
+        <span>Loading Preview</span>
         <UIcon name="i-ph-circle-notch-duotone" class="animate-spin" />
       </div>
     </div>
@@ -177,7 +192,13 @@ const deleteFile = async () => {
 
 
     <template #footer>
-      <div class="flex justify-between">
+      <div
+        class="flex justify-between"
+        :class="{
+          'flex-col items-center gap-2': isMobile,
+          'flex-row': !isMobile,
+        }"
+      >
         <div class="flex items-center gap-2 divide-x divide-gray-500">
           <div class="flex items-center gap-1 text-sm">
             <UIcon name="i-ph-file-duotone" />
