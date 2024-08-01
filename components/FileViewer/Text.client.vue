@@ -138,6 +138,18 @@ const copy = async () => {
     })
   }
 }
+
+const { metaSymbol } = useShortcuts()
+defineShortcuts({
+  meta_s: {
+    usingInput: true,
+    handler: save,
+  },
+  meta_shift_c: {
+    usingInput: true,
+    handler: copy,
+  },
+})
 </script>
 
 <template>
@@ -157,14 +169,27 @@ const copy = async () => {
         icon="i-ph-upload"
         size="xs"
         label="Save"
-      />
+      >
+        <span>
+          Save
+          <UKbd size="xs">{{ metaSymbol }}</UKbd>
+          <UKbd size="xs">S</UKbd>
+        </span>
+      </UButton>
       <UButton
         v-if="tabCurrentSelected == 'editor'"
         @click="copy"
         icon="i-ph-copy"
         size="xs"
         label="Copy to clipboard"
-      />
+      >
+        <span>
+          Copy to clipboard
+          <UKbd size="xs">{{ metaSymbol }}</UKbd>
+          <UKbd size="xs">SHIFT</UKbd>
+          <UKbd size="xs">C</UKbd>
+        </span>
+      </UButton>
     </template>
     <div class="flex flex-1 w-full h-full">
       <template v-if="tabCurrentSelected == 'editor'">
