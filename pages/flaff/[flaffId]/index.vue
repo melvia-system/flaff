@@ -5,10 +5,6 @@ import { FetchError} from 'ofetch'
 import { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
 
-useSeoMeta({
-  title: 'Flaff',
-  description: 'Flaff is a simple file sharing service',
-})
 
 const toast = useToast()
 
@@ -23,11 +19,9 @@ const { data, refresh, error } = await useFetch(`/api/flaff/${flaffId}`, {
 const isOwner = computed(() => {
   return data.value?.data?.isOwner || false
 })
-watch(data, (newVal) => {
-  useSeoMeta({
-    title: newVal?.data?.title + ' | Flaff',
-    description: 'Flaff is a simple file sharing service',
-  })
+useSeoMeta({
+  title: () => data.value?.data?.title + ' | Flaff',
+  description: 'Flaff is a simple file sharing service',
 })
 
 // const items = ref<Item[]>([])
