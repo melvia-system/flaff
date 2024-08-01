@@ -1,0 +1,41 @@
+import { d as defineEventHandler, g as getValidatedRouterParams } from '../../../runtime.mjs';
+import { z } from 'zod';
+import { f as findFlaffByMergeId } from '../../../_/flaff.mjs';
+import 'node:http';
+import 'node:https';
+import 'fs';
+import 'path';
+import '@prisma/client';
+import 'node:fs';
+import 'node:url';
+import '@iconify/utils';
+import 'consola/core';
+
+const ParamsSchema = z.object({
+  flaffId: z.string()
+});
+const index_get = defineEventHandler(async (event) => {
+  const { flaffId } = await getValidatedRouterParams(event, ParamsSchema.parse);
+  const flaff = await findFlaffByMergeId(flaffId, true);
+  let isOwner = false;
+  if (flaff.ownerLink === flaffId)
+    isOwner = true;
+  const data = isOwner ? flaff : {
+    title: flaff.title,
+    uuid: flaff.uuid,
+    createdAt: flaff.createdAt,
+    updatedAt: flaff.updatedAt,
+    files: flaff.files || []
+  };
+  return {
+    ok: true,
+    message: "flaff found",
+    data: {
+      ...data,
+      isOwner
+    }
+  };
+});
+
+export { index_get as default };
+//# sourceMappingURL=index.get.mjs.map

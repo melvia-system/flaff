@@ -35,11 +35,10 @@ export const findFlaffByMergeId = async (flaffId: string, withFiles = false): Pr
   return flaff as FlaffWithFiles
 }
 
-export const ParamsSchema = z.object({
-  flaffId: z.string(),
-});
-
 export const getFlaffIdFromParam = async (event: H3Event<EventHandlerRequest>) => {
+  const ParamsSchema = z.object({
+    flaffId: z.string(),
+  });
   const { flaffId } = await getValidatedRouterParams(event, ParamsSchema.parse)
   return flaffId
 }

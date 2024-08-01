@@ -12,7 +12,7 @@ const prisma = globalThis.prismaGlobal ?? prismaClientSingleton()
 
 export {
   prisma,
-  Prisma
+  Prisma,
 }
 
 if (process.env.NODE_ENV !== 'production') globalThis.prismaGlobal = prisma
