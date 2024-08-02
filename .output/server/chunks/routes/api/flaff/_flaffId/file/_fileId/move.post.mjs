@@ -43,6 +43,12 @@ const move_post = defineEventHandler(async (event) => {
         statusMessage: "target is not a folder"
       });
     }
+    if (target.uuid === fileId || target.uuid === file.uuid) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: "target is same with file"
+      });
+    }
     await prisma.file.update({
       where: {
         uuid: fileId
