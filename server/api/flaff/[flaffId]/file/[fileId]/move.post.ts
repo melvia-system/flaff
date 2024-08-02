@@ -36,18 +36,28 @@ export default defineEventHandler(async (event) => {
   }
   if (targetId) {
     const target = flaff.files.find(file => file.uuid === targetId)
+    // target id muse exist
     if (!target) {
       throw createError({
         statusCode: 404,
         statusMessage: 'target not found',
       })
     }
+    // target must folder
     if (target.type !== 'folder') {
       throw createError({
         statusCode: 400,
         statusMessage: 'target is not a folder',
       })
     }
+    // target not same with file
+    if (target.uuid === fileId || target.uuid === file.uuid) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'target is same with file',
+      })
+    }
+
     await prisma.file.update({
       where: {
         uuid: fileId,
