@@ -1,4 +1,4 @@
-import { b as createStorage, f as fsDriver } from '../runtime.mjs';
+import { e as createStorage, f as fsDriver } from '../runtime.mjs';
 
 const storage = createStorage({
   driver: fsDriver({

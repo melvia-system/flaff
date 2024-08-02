@@ -5,6 +5,7 @@ import {
   LazyFileViewerText,
   LazyFileViewerVideo,
   LazyFileViewerDefault,
+  LazyFileViewerFolder,
 } from '#components'
 
 const props = defineProps({
@@ -22,7 +23,7 @@ const props = defineProps({
   },
 })
 
-const emits = defineEmits(['flaffUpdated', 'changeFileByName'])
+const emits = defineEmits(['flaffUpdated', 'changeFileByName', 'changeFileByUuid'])
 
 const EXT_READABLE_RESIZE_PATTERN: {
   [key: string]: string
@@ -49,6 +50,7 @@ const getMimeType = computed(() => {
 })
 
 const MIME_READABLE_PATTERN = [
+  'application/x-directory',
   'application/pdf',
   'text/*',
   'image/*',
@@ -65,6 +67,7 @@ const ViewerComponents = {
   'image/*': LazyFileViewerImage,
   'application/pdf': LazyFileViewerPdf,
   'text/*': LazyFileViewerText,
+  'application/x-directory': LazyFileViewerFolder,
   'video/mp4': LazyFileViewerVideo,
 }
 
@@ -101,6 +104,7 @@ const ForceViewerComponent = computed(() => {
       $emit('flaffUpdated', ...args)
     }"
     @changeFileByName="(name: string) => $emit('changeFileByName', name)"
+    @changeFileByUuid="(uuid: string) => $emit('changeFileByUuid', uuid)"
   />
   <FileViewerContainer
     v-else
@@ -114,6 +118,7 @@ const ForceViewerComponent = computed(() => {
       console.log('flaff-updated')
       $emit('flaffUpdated', ...args)
     }"
+    @changeFileByUuid="(uuid: string) => $emit('changeFileByUuid', uuid)"
   >
     <div class="flex-1 flex justify-center items-center">
       <div class="flex flex-col justify-center items-center gap-1">

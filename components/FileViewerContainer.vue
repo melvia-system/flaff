@@ -46,12 +46,27 @@ const download = async () => {
     const res = await $fetch(`/api/flaff/${props.flaffId}/file/${props.item.uuid}`, {
       responseType: 'blob',
     })
-    const url = URL.createObjectURL(res)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = props.item.name
-    a.click()
-    URL.revokeObjectURL(url)
+    if (res instanceof Blob) {
+      const url = URL.createObjectURL(res)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = props.item.name
+      a.click()
+      URL.revokeObjectURL(url)
+    } else if (res instanceof MediaSource) {
+      // download media source
+      const url = URL.createObjectURL(res)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = props.item.name
+      a.click()
+      URL.revokeObjectURL(url)
+    } else {
+      $toast.add({
+        title: 'Error',
+        description: 'Failed to download file',
+      })
+    }
   } catch (error) {
     console.error('error', error)
   }

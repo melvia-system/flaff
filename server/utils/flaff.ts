@@ -22,7 +22,7 @@ export const findFlaffByMergeId = async (flaffId: string, withFiles = false): Pr
       ],
     },
     include: {
-      files: true
+      files: true,
     }
   })
   if (!flaff) {

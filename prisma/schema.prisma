@@ -21,14 +21,14 @@ model Flaff {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-
-  files          File[]
+  files File[]
 }
 
 // files is many to one with flaff
 model File {
   uuid      String   @id @default(uuid())
   flaffUuid String
+  fileId    String?
   name      String
   size      Int
   type      String
@@ -37,4 +37,7 @@ model File {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   flaff     Flaff    @relation(fields: [flaffUuid], references: [uuid])
+  
+  parent       File?    @relation("FileChildren", fields: [fileId], references: [uuid])
+  children     File[]   @relation("FileChildren")
 }

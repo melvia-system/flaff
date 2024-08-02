@@ -11,17 +11,39 @@ declare global {
     // mime: string
     // ext: string
     // size: number
+
+    // uuid: string;
+    // name: string;
+    // size: number;
+    // type: string;
+    // extension: string;
+    // mimeType: string
+    // fileId: string | null
+    // files: Item[]
+
     uuid: string;
+    flaffUuid: string;
+    fileId: string | null;
     name: string;
     size: number;
     type: string;
     extension: string;
-    mimeType: string
+    mimeType: string;
+    createdAt: Date;
+    updatedAt: Date;
+    files: Item[];
   }
   interface Flaff {
     files: Item[]
     isOwner: boolean
-    uuid: string
+    uuid: string;
+    title: string;
+    ownerLink: string;
+    ownerPassword: string | null;
+    guestLink: string;
+    guestPassword: string | null;
+    createdAt: Date;
+    updatedAt: Date;
   }
 }
 

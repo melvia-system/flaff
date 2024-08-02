@@ -14,7 +14,7 @@ const props = defineProps({
   },
 })
 
-const emits = defineEmits(['flaffUpdated'])
+const emits = defineEmits(['flaffUpdated', 'changeFileByUuid'])
 </script>
 
 <template>
@@ -22,12 +22,19 @@ const emits = defineEmits(['flaffUpdated'])
     :item="props.item"
     :flaff-id="props.flaffId"
     :is-mime-readable="true"
-    :flaff="flaff"
-    mimeType="text/*"
+    :flaff="props.flaff"
+    mimeType="application/x-directory"
     @flaff-updated="(...args: any) => $emit('flaffUpdated', ...args)"
   >
-    <div class="flex-1 flex justify-center items-center">
-      <div class="italic">Cant Read</div>
+    <div class="px-6 py-4 flex flex-col gap-2 w-full flex-1">
+      <UButton
+        v-for="menu in item.files.sort((a, b) => a.mimeType === 'application/x-directory' ? -1 : 1)"
+        :key="menu.uuid"
+        :label="menu.name"
+        variant="ghost"
+        :icon="getIcon(menu)"
+        @click="() => $emit('changeFileByUuid', menu.uuid)"
+      />
     </div>
   </FileViewerContainer>
 </template>

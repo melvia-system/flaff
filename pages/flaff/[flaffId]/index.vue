@@ -10,7 +10,9 @@ const toast = useToast()
 
 const password = ref<string>('')
 const tempPassword = ref<string>('')
-const { data, refresh, error } = await useFetch(`/api/flaff/${flaffId}`, {
+const { data, refresh, error } = await useFetch<{
+  data: Flaff
+}>(`/api/flaff/${flaffId}`, {
   method: 'GET',
   query: {
     password: password,
@@ -23,39 +25,14 @@ useSeoMeta({
   title: () => data.value?.data?.title + ' | Flaff',
   description: 'Flaff is a simple file sharing service',
 })
-
-const items = ref<Item[]>([ ...data.value?.data.files || [] ])
+const items = ref<Item[]>([ ...(data.value?.data.files as unknown as Item[]) || [] ])
 watch(data, () => {
-  items.value = [ ...data.value?.data.files || [] ]
+  items.value = [ ...(data.value?.data.files as unknown as Item[]) || [] ]
 })
 // const items = computed<Item[]>(() => {
 //   return data.value?.data?.files || []
 // })
-const selectedItem = ref<Item | null>(null)
-
-const ICONS_ITEMS_LIST: {
-  [key: string]: {
-    [key: string]: string
-  }
-} = {
-  folder: {
-    default: 'i-ph-folder',
-  },
-  file: {
-    default: 'i-ph-file',
-    pdf: 'i-ph-file-pdf',
-    txt: 'i-ph-file-txt',
-    md: 'i-ph-markdown-logo',
-    jpg: 'i-ph-file-jpg',
-    jpeg: 'i-ph-file-jpg',
-    png: 'i-ph-file-png',
-  }
-}
-const getIcon = (item: Item) => {
-  const ext = item.extension
-  const type = item.type
-  return ICONS_ITEMS_LIST[type][ext] || ICONS_ITEMS_LIST[type].default
-}
+const selectedItem = ref<Item>()
 
 const fileInput = ref<HTMLInputElement | null>(null)
 const triggerUploadFile = async () => {
@@ -63,6 +40,8 @@ const triggerUploadFile = async () => {
   fileInput.value?.click()
 }
 const handleUploadFile = async (event: Event) => {
+  const selected = selectedItem.value?.uuid
+
   // upload file
   const target = event.target as HTMLInputElement
   const file = target.files?.[0]
@@ -86,6 +65,9 @@ const handleUploadFile = async (event: Event) => {
     const res = await $fetch(`/api/flaff/${data.value?.data.uuid}/file`, {
       method: 'POST',
       body: formData,
+      query: {
+        parent: selected,
+      }
     })
     console.log('res', res)
     refresh()
@@ -102,7 +84,7 @@ const handleUploadFile = async (event: Event) => {
 }
 
 const selectItem = (item: Item) => {
-  selectedItem.value = null
+  selectedItem.value = undefined
   setTimeout(() => {
     selectedItem.value = item
   }, 50)
@@ -131,16 +113,17 @@ const isLoaded = ref(false)
 onMounted(() => {
   if (data.value?.data?.files?.length) {
     isLoaded.value = true
-    selectItem(data.value?.data?.files[0])
+    selectItem(data.value?.data?.files[0] as unknown as Item)
   }
 })
 watch(data, () => {
   if (data.value?.data?.files?.length && !isLoaded.value) {
     isLoaded.value = true
-    selectItem(data.value?.data?.files[0])
+    selectItem(data.value?.data?.files[0] as unknown as Item)
   }
 })
 
+// MODALS
 const $modalSetting = (() => {
   const isShow = ref(false)
   const isLoading = ref(false)
@@ -215,15 +198,51 @@ const flaffUpdated = (reset = false) => {
   refresh()
   if (reset) {
     if (data.value?.data?.files?.length) {
-      selectItem(data.value?.data?.files[0])
+      selectItem(data.value?.data?.files[0] as unknown as Item)
     }
   }
 }
 
 const changeFileByName = (name: string) => {
   console.log('change file by name', name)
-  const files = data.value?.data?.files || []
-  const find = files.find((file) => file.name === name)
+  // const find = items.value.find((file) => file.name === name)
+  // if (find) {
+  //   selectItem(find)
+  // }
+  
+  // search recursively in name of path / from arg name
+  const paths = name.split('/')
+  let find: Item | undefined = undefined
+  let files = items.value
+  for (let i = 0; i < paths.length; i++) {
+    const path = paths[i]
+    find = files.find((file) => file.name === path)
+    if (!find) break
+    if (find.type === 'folder') {
+      files = find.files as unknown as Item[]
+    }
+  }
+  if (find) {
+    selectItem(find)
+  }
+}
+
+const changeFileByUuid = (uuid: string) => {
+  // recursively search in files because current items ahas nested files
+  let find: Item | undefined = undefined
+  const search = (files: Item[]) => {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+      if (file.uuid === uuid) {
+        find = file
+        break
+      }
+      if (file.type === 'folder') {
+        search(file.files as unknown as Item[])
+      }
+    }
+  }
+  search(items.value)
   if (find) {
     selectItem(find)
   }
@@ -233,6 +252,65 @@ const { width } = useWindowSize()
 const isMobile = computed(() => {
   return width.value < 768
 })
+
+// MODALS
+const $modalCreateFolder = (() => {
+  const isShow = ref(false)
+  const isLoading = ref(false)
+  
+  const schema = z.object({
+    name: z.string(),
+  })
+
+  type Schema = z.output<typeof schema>
+
+  const state = reactive<Schema>({
+    name: '',
+  })
+  
+  async function onSubmit (event: FormSubmitEvent<Schema>) {
+    try {
+      // get file id
+      let selected: Item|undefined
+      if (!selectedItem.value) return
+      if (selectedItem.value.type === 'folder') {
+        selected = selectedItem.value
+      } else if (selectedItem.value.fileId) {
+        selected = getParentFolder(items.value, selectedItem.value?.fileId)
+      }
+      console.log('selected', selected)
+
+      const res = await $fetch(`/api/flaff/${data.value?.data.uuid}/file/folder`, {
+        method: 'POST',
+        body: JSON.stringify({
+          name: event.data.name,
+          fileId: selected?.uuid,
+        }),
+      })
+      console.log('res', res)
+      toast.add({
+        title: 'Success',
+        description: `Folder created`,
+      })
+      refresh()
+    } catch (error) {
+      console.error('error', error)
+      toast.add({
+        title: 'Error',
+        description: `Failed to create folder`,
+      })
+    }
+    isShow.value = false
+  }
+
+  return {
+    isShow,
+    isLoading,
+    schema,
+    state,
+    onSubmit,
+  }
+})()
 </script>
 
 <template>
@@ -296,16 +374,27 @@ const isMobile = computed(() => {
                     Explorer
                   </div>
                   <div v-if="isOwner" class="flex gap-2 justify-end">
-                    <UButton
-                      icon="i-ph-plus"
-                      @click="triggerUploadFile"
-                      size="xs"
-                    />
-                    <UButton
-                      icon="i-ph-repeat"
-                      @click="refresh"
-                      size="xs"
-                    />
+                    <UTooltip text="Create Folder">
+                      <UButton
+                        trailing-icon="i-ph-folder"
+                        @click="$modalCreateFolder.isShow.value = true"
+                        size="xs"
+                      />
+                    </UTooltip>
+                    <UTooltip text="Upload File">
+                      <UButton
+                        icon="i-ph-upload"
+                        @click="triggerUploadFile"
+                        size="xs"
+                      />
+                    </UTooltip>
+                    <UTooltip text="Refresh">
+                      <UButton
+                        icon="i-ph-repeat"
+                        @click="refresh"
+                        size="xs"
+                      />
+                    </UTooltip>
                     <input
                       ref="fileInput"
                       type="file"
@@ -314,21 +403,16 @@ const isMobile = computed(() => {
                     />
                   </div>
                 </div>
-                <div>
-                  <template v-for="(item, i) in items" :key="item.uuid + i">
-                    <UButton
-                      class="w-full text-left truncate"
-                      :label="item.name"
-                      :icon="getIcon(item)"
-                      :variant="selectedItem === item ? 'solid' : 'ghost'"
-                      @click="() => selectItem(item)"
-                    />
-                    <!-- <button
-                      class="text-left truncate w-full"
-                    >
-                      {{ item.name }}
-                    </button> -->
-                  </template>
+                <div class="flex flex-col">
+                  <ExplorerItem
+                    :flaff="data.data"
+                    :files="items"
+                    :selectedItem="selectedItem"
+                    @selectItem="(item) => selectItem(item)"
+                    @flaff-updated="flaffUpdated"
+                  />
+                  <!-- <template v-for="(item, i) in items" :key="item.uuid + i">
+                  </template> -->
                 </div>
               </UCard>
             </div>
@@ -340,38 +424,13 @@ const isMobile = computed(() => {
                   :flaff="data?.data"
                   @flaff-updated="flaffUpdated"
                   @changeFileByName="(name) => changeFileByName(name)"
+                  @changeFileByUuid="(uuid) => changeFileByUuid(uuid)"
                 />
               </ClientOnly>
             </div>
           </div>
         </div>
       </UContainer>
-      <UModal v-model="$modalSetting.isShow.value">
-        <UCard>
-          <template #header>
-            <h2 class="font-semibold text-xl">Settings</h2>
-          </template>
-          
-          <UForm :schema="$modalSetting.schema" :state="$modalSetting.state" class="space-y-4" @submit="$modalSetting.onSubmit">
-            <UFormGroup label="Name" name="name">
-              <UInput v-model="$modalSetting.state.title" />
-            </UFormGroup>
-
-            <UFormGroup label="Public Password" name="publicPassword">
-              <UInput v-model="$modalSetting.state.publicPassword" type="text" />
-            </UFormGroup>
-
-            <UFormGroup label="Owner Password" name="ownerPassword">
-              <UInput v-model="$modalSetting.state.ownerPassword" type="text" />
-            </UFormGroup>
-
-            <div class="flex gap-2 justify-end">
-              <UButton color="red" label="Cancel" @click="$modalSetting.isShow.value = false" />
-              <UButton loading-icon="i-ph-file-duotone" :loading="$modalSetting.isLoading.value" type="submit" label="Save" />
-            </div>
-          </UForm>
-        </UCard>
-      </UModal>
     </template>
     <div v-else-if="error && error.statusCode == 401" class="flex-1 flex items-center justify-center">
       <div>
@@ -387,5 +446,51 @@ const isMobile = computed(() => {
         </UCard>
       </div>
     </div>
+
+    <UModal v-model="$modalSetting.isShow.value">
+      <UCard>
+        <template #header>
+          <h2 class="font-semibold text-xl">Settings</h2>
+        </template>
+        
+        <UForm :schema="$modalSetting.schema" :state="$modalSetting.state" class="space-y-4" @submit="$modalSetting.onSubmit">
+          <UFormGroup label="Name" name="name">
+            <UInput v-model="$modalSetting.state.title" />
+          </UFormGroup>
+
+          <UFormGroup label="Public Password" name="publicPassword">
+            <UInput v-model="$modalSetting.state.publicPassword" type="text" />
+          </UFormGroup>
+
+          <UFormGroup label="Owner Password" name="ownerPassword">
+            <UInput v-model="$modalSetting.state.ownerPassword" type="text" />
+          </UFormGroup>
+
+          <div class="flex gap-2 justify-end">
+            <UButton color="red" label="Cancel" @click="$modalSetting.isShow.value = false" />
+            <UButton loading-icon="i-ph-file-duotone" :loading="$modalSetting.isLoading.value" type="submit" label="Save" />
+          </div>
+        </UForm>
+      </UCard>
+    </UModal>
+
+    <UModal v-model="$modalCreateFolder.isShow.value">
+      <UCard>
+        <template #header>
+          <h2 class="font-semibold text-xl">Create Folder</h2>
+        </template>
+        
+        <UForm :schema="$modalCreateFolder.schema" :state="$modalCreateFolder.state" class="space-y-4" @submit="$modalCreateFolder.onSubmit">
+          <UFormGroup label="Name" name="name">
+            <UInput v-model="$modalCreateFolder.state.name" />
+          </UFormGroup>
+
+          <div class="flex gap-2 justify-end">
+            <UButton color="red" label="Cancel" @click="$modalCreateFolder.isShow.value = false" />
+            <UButton loading-icon="i-ph-file-duotone" :loading="$modalCreateFolder.isLoading.value" type="submit" label="Create" />
+          </div>
+        </UForm>
+      </UCard>
+    </UModal>
   </div>
 </template>

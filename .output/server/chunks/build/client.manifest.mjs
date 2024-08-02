@@ -6,12 +6,48 @@ const client_manifest = {
     "file": "editor.GV1GbXjP.css",
     "src": "_!~{004}~.js"
   },
-  "_TyoEirHZ.js": {
+  "_DOwFC9TG.js": {
     "resourceType": "script",
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "TyoEirHZ.js",
+    "file": "DOwFC9TG.js",
+    "name": "index",
+    "isDynamicEntry": true,
+    "imports": [
+      "node_modules/nuxt/dist/app/entry.js"
+    ],
+    "dynamicImports": [
+      "_DULxEgAi.js"
+    ]
+  },
+  "_DULxEgAi.js": {
+    "resourceType": "script",
+    "module": true,
+    "prefetch": true,
+    "preload": true,
+    "file": "DULxEgAi.js",
+    "name": "FileViewer.client",
+    "isDynamicEntry": true,
+    "imports": [
+      "node_modules/nuxt/dist/app/entry.js",
+      "_DOwFC9TG.js"
+    ],
+    "dynamicImports": [
+      "components/FileViewer/Image.vue",
+      "components/FileViewer/Pdf.vue",
+      "components/FileViewer/Text.client.vue",
+      "components/FileViewer/Video.vue",
+      "components/FileViewer/Default.vue",
+      "components/FileViewer/Folder.vue"
+    ]
+  },
+  "_FoZiHdVr.js": {
+    "resourceType": "script",
+    "module": true,
+    "prefetch": true,
+    "preload": true,
+    "file": "FoZiHdVr.js",
     "name": "editor.main",
     "isDynamicEntry": true,
     "imports": [
@@ -130,54 +166,34 @@ const client_manifest = {
     "resourceType": "font",
     "mimeType": "font/ttf"
   },
-  "_cLKo2x5B.js": {
-    "resourceType": "script",
-    "module": true,
-    "prefetch": true,
-    "preload": true,
-    "file": "cLKo2x5B.js",
-    "name": "FileViewer.client",
-    "isDynamicEntry": true,
-    "imports": [
-      "node_modules/nuxt/dist/app/entry.js",
-      "_z6m01s7W.js"
-    ],
-    "dynamicImports": [
-      "components/FileViewer/Image.vue",
-      "components/FileViewer/Pdf.vue",
-      "components/FileViewer/Text.client.vue",
-      "components/FileViewer/Video.vue",
-      "components/FileViewer/Default.vue"
-    ]
-  },
-  "_z6m01s7W.js": {
-    "resourceType": "script",
-    "module": true,
-    "prefetch": true,
-    "preload": true,
-    "file": "z6m01s7W.js",
-    "name": "index",
-    "isDynamicEntry": true,
-    "imports": [
-      "node_modules/nuxt/dist/app/entry.js"
-    ],
-    "dynamicImports": [
-      "_cLKo2x5B.js"
-    ]
-  },
   "components/FileViewer/Default.vue": {
     "resourceType": "script",
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "IsbETsHr.js",
+    "file": "BqgOLRUU.js",
     "name": "Default",
     "src": "components/FileViewer/Default.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_cLKo2x5B.js",
+      "_DULxEgAi.js",
       "node_modules/nuxt/dist/app/entry.js",
-      "_z6m01s7W.js"
+      "_DOwFC9TG.js"
+    ]
+  },
+  "components/FileViewer/Folder.vue": {
+    "resourceType": "script",
+    "module": true,
+    "prefetch": true,
+    "preload": true,
+    "file": "D3JLYN9n.js",
+    "name": "Folder",
+    "src": "components/FileViewer/Folder.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "node_modules/nuxt/dist/app/entry.js",
+      "_DULxEgAi.js",
+      "_DOwFC9TG.js"
     ]
   },
   "components/FileViewer/Image.vue": {
@@ -185,14 +201,14 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "B36jw8bo.js",
+    "file": "DHu1Mw3S.js",
     "name": "Image",
     "src": "components/FileViewer/Image.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_cLKo2x5B.js",
+      "_DULxEgAi.js",
       "node_modules/nuxt/dist/app/entry.js",
-      "_z6m01s7W.js"
+      "_DOwFC9TG.js"
     ]
   },
   "components/FileViewer/Pdf.vue": {
@@ -200,14 +216,14 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "0xjiscxx.js",
+    "file": "DRS-Xb6D.js",
     "name": "Pdf",
     "src": "components/FileViewer/Pdf.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_cLKo2x5B.js",
+      "_DULxEgAi.js",
       "node_modules/nuxt/dist/app/entry.js",
-      "_z6m01s7W.js"
+      "_DOwFC9TG.js"
     ]
   },
   "components/FileViewer/Text.client.vue": {
@@ -215,14 +231,14 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "BlrYfaqR.js",
+    "file": "BhVeADxB.js",
     "name": "Text.client",
     "src": "components/FileViewer/Text.client.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_z6m01s7W.js",
+      "_DOwFC9TG.js",
       "node_modules/nuxt/dist/app/entry.js",
-      "_cLKo2x5B.js"
+      "_DULxEgAi.js"
     ],
     "dynamicImports": [
       "components/FileViewer/TextViewerMarkdown.vue",
@@ -234,7 +250,7 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "TAGdZV-7.js",
+    "file": "BRTtysAn.js",
     "name": "TextViewerDefault",
     "src": "components/FileViewer/TextViewerDefault.vue",
     "isDynamicEntry": true,
@@ -247,7 +263,7 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "6iaGTYon.js",
+    "file": "D7WViJgy.js",
     "name": "TextViewerMarkdown",
     "src": "components/FileViewer/TextViewerMarkdown.vue",
     "isDynamicEntry": true,
@@ -269,14 +285,14 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "CcLyxjJk.js",
+    "file": "CbwjHgsT.js",
     "name": "Video",
     "src": "components/FileViewer/Video.vue",
     "isDynamicEntry": true,
     "imports": [
-      "_cLKo2x5B.js",
+      "_DULxEgAi.js",
       "node_modules/nuxt/dist/app/entry.js",
-      "_z6m01s7W.js"
+      "_DOwFC9TG.js"
     ],
     "css": [
       "Video.CYvUkbQJ.css"
@@ -498,12 +514,12 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "Ca_IXor1.js",
+    "file": "-zXlkrLM.js",
     "name": "freemarker2",
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/freemarker2/freemarker2.js",
     "isDynamicEntry": true,
     "imports": [
-      "_TyoEirHZ.js",
+      "_FoZiHdVr.js",
       "node_modules/nuxt/dist/app/entry.js"
     ],
     "isEntry": false
@@ -546,12 +562,12 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "BOGdEu_i.js",
+    "file": "D28SMC2i.js",
     "name": "handlebars",
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/handlebars/handlebars.js",
     "isDynamicEntry": true,
     "imports": [
-      "_TyoEirHZ.js",
+      "_FoZiHdVr.js",
       "node_modules/nuxt/dist/app/entry.js"
     ],
     "isEntry": false
@@ -572,12 +588,12 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "CveIeE2G.js",
+    "file": "Lcp4lLhv.js",
     "name": "html",
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/html/html.js",
     "isDynamicEntry": true,
     "imports": [
-      "_TyoEirHZ.js",
+      "_FoZiHdVr.js",
       "node_modules/nuxt/dist/app/entry.js"
     ],
     "isEntry": false
@@ -609,13 +625,13 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "CX6-VugF.js",
+    "file": "Bmj5fvkv.js",
     "name": "javascript",
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/javascript/javascript.js",
     "isDynamicEntry": true,
     "imports": [
       "node_modules/monaco-editor/esm/vs/basic-languages/typescript/typescript.js",
-      "_TyoEirHZ.js",
+      "_FoZiHdVr.js",
       "node_modules/nuxt/dist/app/entry.js"
     ],
     "isEntry": false
@@ -669,12 +685,12 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "Ds-bJ3J2.js",
+    "file": "DxAlBknG.js",
     "name": "liquid",
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/liquid/liquid.js",
     "isDynamicEntry": true,
     "imports": [
-      "_TyoEirHZ.js",
+      "_FoZiHdVr.js",
       "node_modules/nuxt/dist/app/entry.js"
     ],
     "isEntry": false
@@ -717,12 +733,12 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "DrQONGp3.js",
+    "file": "oZx8pHYG.js",
     "name": "mdx",
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/mdx/mdx.js",
     "isDynamicEntry": true,
     "imports": [
-      "_TyoEirHZ.js",
+      "_FoZiHdVr.js",
       "node_modules/nuxt/dist/app/entry.js"
     ],
     "isEntry": false
@@ -897,12 +913,12 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "xZje5kDB.js",
+    "file": "oojo0n3G.js",
     "name": "python",
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/python/python.js",
     "isDynamicEntry": true,
     "imports": [
-      "_TyoEirHZ.js",
+      "_FoZiHdVr.js",
       "node_modules/nuxt/dist/app/entry.js"
     ],
     "isEntry": false
@@ -934,12 +950,12 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "BpGB5cix.js",
+    "file": "Cv3tXcHW.js",
     "name": "razor",
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/razor/razor.js",
     "isDynamicEntry": true,
     "imports": [
-      "_TyoEirHZ.js",
+      "_FoZiHdVr.js",
       "node_modules/nuxt/dist/app/entry.js"
     ],
     "isEntry": false
@@ -1158,12 +1174,12 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "Bfs4iaq-.js",
+    "file": "BmvYtI_U.js",
     "name": "typescript",
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/typescript/typescript.js",
     "isDynamicEntry": true,
     "imports": [
-      "_TyoEirHZ.js",
+      "_FoZiHdVr.js",
       "node_modules/nuxt/dist/app/entry.js"
     ],
     "isEntry": false
@@ -1206,12 +1222,12 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "mP0lPRKZ.js",
+    "file": "CzQcRrs2.js",
     "name": "xml",
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/xml/xml.js",
     "isDynamicEntry": true,
     "imports": [
-      "_TyoEirHZ.js",
+      "_FoZiHdVr.js",
       "node_modules/nuxt/dist/app/entry.js"
     ],
     "isEntry": false
@@ -1221,12 +1237,12 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "BDrIjRq9.js",
+    "file": "BoiqqmmK.js",
     "name": "yaml",
     "src": "node_modules/monaco-editor/esm/vs/basic-languages/yaml/yaml.js",
     "isDynamicEntry": true,
     "imports": [
-      "_TyoEirHZ.js",
+      "_FoZiHdVr.js",
       "node_modules/nuxt/dist/app/entry.js"
     ],
     "isEntry": false
@@ -1236,12 +1252,12 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "CCWKSX49.js",
+    "file": "sxEF9Fq5.js",
     "name": "cssMode",
     "src": "node_modules/monaco-editor/esm/vs/language/css/cssMode.js",
     "isDynamicEntry": true,
     "imports": [
-      "_TyoEirHZ.js",
+      "_FoZiHdVr.js",
       "node_modules/nuxt/dist/app/entry.js"
     ],
     "isEntry": false
@@ -1251,12 +1267,12 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "9mV-rDrL.js",
+    "file": "B_voDSY3.js",
     "name": "htmlMode",
     "src": "node_modules/monaco-editor/esm/vs/language/html/htmlMode.js",
     "isDynamicEntry": true,
     "imports": [
-      "_TyoEirHZ.js",
+      "_FoZiHdVr.js",
       "node_modules/nuxt/dist/app/entry.js"
     ],
     "isEntry": false
@@ -1266,12 +1282,12 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "BXhoqqro.js",
+    "file": "D3vqv2On.js",
     "name": "jsonMode",
     "src": "node_modules/monaco-editor/esm/vs/language/json/jsonMode.js",
     "isDynamicEntry": true,
     "imports": [
-      "_TyoEirHZ.js",
+      "_FoZiHdVr.js",
       "node_modules/nuxt/dist/app/entry.js"
     ],
     "isEntry": false
@@ -1281,12 +1297,12 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "D9LeqkyD.js",
+    "file": "DoFfRG5g.js",
     "name": "tsMode",
     "src": "node_modules/monaco-editor/esm/vs/language/typescript/tsMode.js",
     "isDynamicEntry": true,
     "imports": [
-      "_TyoEirHZ.js",
+      "_FoZiHdVr.js",
       "node_modules/nuxt/dist/app/entry.js"
     ],
     "isEntry": false
@@ -1296,7 +1312,7 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "B1mtOdua.js",
+    "file": "CUq_4JuF.js",
     "name": "error-404",
     "src": "node_modules/nuxt/dist/app/components/error-404.vue",
     "isDynamicEntry": true,
@@ -1318,7 +1334,7 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "CAPkJ5iq.js",
+    "file": "LBr9LXjg.js",
     "name": "error-500",
     "src": "node_modules/nuxt/dist/app/components/error-500.vue",
     "isDynamicEntry": true,
@@ -1340,22 +1356,22 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "CcZZV5jW.js",
+    "file": "C-7uryom.js",
     "name": "entry",
     "src": "node_modules/nuxt/dist/app/entry.js",
     "isEntry": true,
     "dynamicImports": [
-      "_z6m01s7W.js",
-      "_TyoEirHZ.js",
+      "_DOwFC9TG.js",
+      "_FoZiHdVr.js",
       "node_modules/nuxt/dist/app/components/error-404.vue",
       "node_modules/nuxt/dist/app/components/error-500.vue"
     ],
     "css": [
-      "entry.DwxLmr8S.css"
+      "entry.BjR7VLcc.css"
     ]
   },
-  "entry.DwxLmr8S.css": {
-    "file": "entry.DwxLmr8S.css",
+  "entry.BjR7VLcc.css": {
+    "file": "entry.BjR7VLcc.css",
     "resourceType": "style",
     "prefetch": true,
     "preload": true
@@ -1365,7 +1381,7 @@ const client_manifest = {
     "module": true,
     "prefetch": true,
     "preload": true,
-    "file": "DJUe8pJr.js",
+    "file": "D2iLIyUM.js",
     "name": "index",
     "src": "pages/index.vue",
     "isDynamicEntry": true,

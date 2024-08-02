@@ -1,4 +1,4 @@
-import { d as defineEventHandler, g as getValidatedRouterParams, e as getQuery, c as createError } from '../../../runtime.mjs';
+import { d as defineEventHandler, g as getValidatedRouterParams, b as getQuery, c as createError } from '../../../runtime.mjs';
 import { z } from 'zod';
 import { f as findFlaffByMergeId } from '../../../_/flaff.mjs';
 import 'node:http';
@@ -34,12 +34,33 @@ const index_get = defineEventHandler(async (event) => {
   let isOwner = false;
   if (flaff.ownerLink === flaffId)
     isOwner = true;
-  const data = isOwner ? flaff : {
+  function restructureData(files) {
+    const fileMap = new Map(files.map((file) => [file.uuid, { ...file, files: [] }]));
+    const rootFolders = [];
+    files.forEach((file) => {
+      if (file.fileId) {
+        const parent = fileMap.get(file.fileId);
+        if (parent) {
+          const a = fileMap.get(file.uuid);
+          if (parent.files && a) {
+            parent.files.push(a);
+          }
+        }
+      } else {
+        rootFolders.push(fileMap.get(file.uuid));
+      }
+    });
+    return rootFolders;
+  }
+  const data = isOwner ? {
+    ...flaff,
+    files: restructureData(flaff.files)
+  } : {
     title: flaff.title,
     uuid: flaff.uuid,
     createdAt: flaff.createdAt,
     updatedAt: flaff.updatedAt,
-    files: flaff.files || []
+    files: restructureData(flaff.files)
   };
   return {
     ok: true,
