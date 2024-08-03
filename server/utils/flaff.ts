@@ -5,6 +5,8 @@ import { H3Event, EventHandlerRequest } from 'h3'
 export type FlaffWithFiles = Prisma.FlaffGetPayload<{ include: { files: true } }>
 
 export const findFlaffByMergeId = async (flaffId: string, withFiles = false): Promise<FlaffWithFiles> => {
+  // get available tables on database with prisma
+  // console.log('findFlaffByMergeId', prisma.flaff)
   // find by guestLink first
   let flaff = await prisma.flaff.findFirst({
     where: {
