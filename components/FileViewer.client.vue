@@ -64,10 +64,10 @@ const isMimeReadable = computed(() => {
 })
 
 const ViewerComponents = {
+  'application/x-directory': LazyFileViewerFolder,
   'image/*': LazyFileViewerImage,
   'application/pdf': LazyFileViewerPdf,
   'text/*': LazyFileViewerText,
-  'application/x-directory': LazyFileViewerFolder,
   'video/mp4': LazyFileViewerVideo,
 }
 

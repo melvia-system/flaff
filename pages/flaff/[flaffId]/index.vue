@@ -48,8 +48,8 @@ const handleUploadFile = async (event: Event) => {
   if (!file) return
 
   // validation size
-  // max size is 4 mega bytes
-  const maxSize = 10 * 1024 * 1024 // 4 MB
+  // max size is 15 mega bytes
+  const maxSize = 15 * 1024 * 1024 // 15 MB
   if (file.size > maxSize) {
     toast.add({
       title: 'Error',
@@ -61,6 +61,14 @@ const handleUploadFile = async (event: Event) => {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('link', data.value?.data.ownerLink || '');
+
+  const id = Math.random().toString(36).substring(7)
+  const uploadtoast = toast.add({
+    id,
+    title: 'Uploading',
+    description: `Uploading ${file.name}`,
+    timeout: 0,
+  })
   try {
     const res = await $fetch(`/api/flaff/${data.value?.data.uuid}/file`, {
       method: 'POST',
@@ -71,11 +79,17 @@ const handleUploadFile = async (event: Event) => {
     })
     console.log('res', res)
     refresh()
+    toast.update(id, {
+      title: 'Success',
+      description: `File uploaded`,
+      timeout: 5000,
+    })
   } catch (error) {
     console.error('error', error)
-    toast.add({
+    toast.update(id, {
       title: 'Error',
       description: `Failed to create new flaff`,
+      timeout: 5000,
     })
   }
 
@@ -272,11 +286,12 @@ const $modalCreateFolder = (() => {
     try {
       // get file id
       let selected: Item|undefined
-      if (!selectedItem.value) return
-      if (selectedItem.value.type === 'folder') {
-        selected = selectedItem.value
-      } else if (selectedItem.value.fileId) {
-        selected = getParentFolder(items.value, selectedItem.value?.fileId)
+      if (selectedItem.value) {
+        if (selectedItem.value.type === 'folder') {
+          selected = selectedItem.value
+        } else if (selectedItem.value.fileId) {
+          selected = getParentFolder(items.value, selectedItem.value?.fileId)
+        }
       }
       console.log('selected', selected)
 
@@ -311,6 +326,15 @@ const $modalCreateFolder = (() => {
     onSubmit,
   }
 })()
+
+// watch(error, () => {
+//   if (error.value?.statusCode == 404) {
+//     throw createError({
+//       statusCode: 404,
+//       statusMessage: 'Flaff not found',
+//     })
+//   }
+// })
 </script>
 
 <template>
@@ -446,7 +470,11 @@ const $modalCreateFolder = (() => {
         </UCard>
       </div>
     </div>
-
+    <div v-else-if="error" class="flex-1 flex items-center justify-center">
+      <div>
+        {{ error.statusCode }} {{ error.statusMessage }}
+      </div>
+    </div>
     <UModal v-model="$modalSetting.isShow.value">
       <UCard>
         <template #header>
@@ -473,7 +501,6 @@ const $modalCreateFolder = (() => {
         </UForm>
       </UCard>
     </UModal>
-
     <UModal v-model="$modalCreateFolder.isShow.value">
       <UCard>
         <template #header>

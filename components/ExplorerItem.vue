@@ -27,12 +27,17 @@ const $toast = useToast()
 
 const isTargetDragOver = ref<Item>()
 const onDragOver = (target: Item) => (e: DragEvent) => {
-  e.preventDefault()
   isTargetDragOver.value = target
+  e.preventDefault()
+}
+const onDragLeave = (target: Item) => (e: DragEvent) => {
+  e.preventDefault()
+  isTargetDragOver.value = undefined
 }
 const onDrop = (target: Item) => async (e: DragEvent) => {
   if (!props.flaff.isOwner) return
   e.preventDefault()
+  isTargetDragOver.value = undefined
   const data = e.dataTransfer?.getData('application/json')
   
   let item: Item | undefined
@@ -46,6 +51,7 @@ const onDrop = (target: Item) => async (e: DragEvent) => {
     // get target folder
     const _target = getParentFolder(props.files, target.uuid)
     
+    // return console.log('target drop', _target)
     try {
       const res = await $fetch(`/api/flaff/${props.flaff.uuid}/file/${item.uuid}/move`, {
         method: 'POST',
@@ -65,9 +71,15 @@ const onDrop = (target: Item) => async (e: DragEvent) => {
     }
   }
 }
+
+const isItemDrag = ref<Item>()
 const onDragStart = (item: Item) => (e: DragEvent) => {
+  isItemDrag.value = item
   e.dataTransfer?.setData('application/json', JSON.stringify(item))
   console.log('drag start', e)
+}
+const onDragEnd = (item: Item) => (e: DragEvent) => {
+  isItemDrag.value = undefined
 }
 </script>
 
@@ -82,7 +94,7 @@ const onDragStart = (item: Item) => (e: DragEvent) => {
   >
     <UButton
       @dragover.prevent="(e) => onDragOver(item)(e)"
-      @dragleave.prevent="() => isTargetDragOver = undefined"
+      @dragleave.prevent="(e) => onDragLeave(item)(e)"
       :draggable="flaff.isOwner"
       @drop="(e) => onDrop(item)(e)"
       @dragstart="(e) => onDragStart(item)(e)"
@@ -95,6 +107,7 @@ const onDragStart = (item: Item) => (e: DragEvent) => {
       :variant="selectedItem === item ? 'solid' : 'ghost'"
       @click="() => $emit('selectItem', item)"
       :class="{
+        'border-2 border-dashed border-transparent': isTargetDragOver !== item,
         'border-2 border-dashed border-gray-400': isTargetDragOver === item,
       }"
     />
@@ -116,5 +129,11 @@ const onDragStart = (item: Item) => (e: DragEvent) => {
         @flaffUpdated="() => $emit('flaffUpdated')"
       />
     </div>
+  </div>
+  <div 
+    v-if="level == 0 && isItemDrag !== undefined"
+    class="text-sm text-gray-500 mt-2 border border-gray-400/50 border-dashed rounded p-2 py-1"
+  >
+    <div>drophere root level</div>
   </div>
 </template>

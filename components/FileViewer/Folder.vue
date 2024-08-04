@@ -15,6 +15,10 @@ const props = defineProps({
 })
 
 const emits = defineEmits(['flaffUpdated', 'changeFileByUuid'])
+
+// const menus = computed(() => {
+//   return [...props.item.files.sort((a, b) => a.mimeType === 'application/x-directory' ? -1 : 1)]
+// })
 </script>
 
 <template>
@@ -28,7 +32,7 @@ const emits = defineEmits(['flaffUpdated', 'changeFileByUuid'])
   >
     <div class="px-6 py-4 flex flex-col gap-2 w-full flex-1">
       <UButton
-        v-for="menu in item.files.sort((a, b) => a.mimeType === 'application/x-directory' ? -1 : 1)"
+        v-for="menu in item.files"
         :key="menu.uuid"
         :label="menu.name"
         variant="ghost"
