@@ -17,16 +17,34 @@ export default defineEventHandler(async (event) => {
   const { fileId } = await getValidatedRouterParams(event, ParamsSchema.parse)
 
   const deleted = await prisma.$transaction(async (tx) => {
-    try {
-      await storage.removeItem(fileId)
-    } catch (error) {
-      console.error(error)
-    }
-    return await tx.file.delete({
+    // delete file children
+    const uuids = (await tx.file.findMany({
+      where: {
+        fileId,
+      },
+    })).map(item => item.uuid)
+    console.log('uuids', uuids)
+    await tx.file.deleteMany({
+      where: {
+        fileId,
+      },
+    })
+
+    await tx.file.delete({
       where: {
         uuid: fileId,
       },
     })
+
+    try {
+      await storage.removeItem(fileId)
+      for (const uuid of uuids) {
+        await storage.removeItem(uuid)
+      }
+    } catch (error) {
+      console.error(error)
+      throw new Error('failed to delete file')
+    }
   })
 
   return {

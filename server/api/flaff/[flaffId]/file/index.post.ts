@@ -12,6 +12,10 @@ const getExtFromFileName = (filename: string) => {
 
 export default defineEventHandler(async (event) => {
   const data = await readMultipartFormData(event)
+  let targetId = data?.find(item => item.name === 'targetId')?.data.toString()
+  if (targetId) {
+    console.log('targetId', targetId)
+  }
 
   const flaffId = await getFlaffIdFromParam(event)
   const flaff = await findFlaffByMergeId(flaffId)
@@ -37,9 +41,30 @@ export default defineEventHandler(async (event) => {
       const mimeType = file.type || 'text/plain'
       const ext = getExtFromFileName(file.filename || '') || mimeType.split('/').pop() || 'txt'
       const uuid = v7()
+
+      // check if file already exists
+      const query = await tx.file.findFirst({
+        where: {
+          name: file.filename as string,
+          flaffUuid: flaff.uuid,
+        }
+      })
+      if (query) {
+        // remove file from storage
+        await storage.removeItem(uuid)
+        // remove file from database
+        await tx.file.delete({
+          where: {
+            uuid: query.uuid
+          }
+        })
+      }
+
+      // save
       // calculate data size in bytes form buffer
       const size = file.data.length
       await storage.setItemRaw(uuid, file.data)
+      
       return await tx.file.create({
         data: {
           extension: ext,
@@ -52,7 +77,14 @@ export default defineEventHandler(async (event) => {
             connect: {
               uuid: flaff.uuid
             }
-          }
+          },
+          ...(targetId ? {
+            parent: {
+              connect: {
+                uuid: targetId
+              }
+            }
+          } : {}),
         }
       })
     })

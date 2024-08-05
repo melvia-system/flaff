@@ -41,56 +41,63 @@ const triggerUploadFile = async () => {
 }
 const handleUploadFile = async (event: Event) => {
   const selected = selectedItem.value?.uuid
+  let selectedParent: Item | undefined
+  if (selected) {
+    selectedParent = getParentFolder(items.value, selected)
+  }
 
   // upload file
   const target = event.target as HTMLInputElement
-  const file = target.files?.[0]
-  if (!file) return
+  const files = target.files
+  if (!files || files.length === 0) return
 
-  // validation size
-  // max size is 15 mega bytes
-  const maxSize = 15 * 1024 * 1024 // 15 MB
-  if (file.size > maxSize) {
-    toast.add({
-      title: 'Error',
-      description: `File size is too large, max size is 4 MB`,
-    })
-    return
-  }
+  for (let i = 0; i < files.length; i++) {
+    const file = target.files?.item(i)
+    if (!file) return
 
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('link', data.value?.data.ownerLink || '');
+    // validation size
+    // max size is 15 mega bytes
+    const maxSize = 15 * 1024 * 1024 // 15 MB
+    if (file.size > maxSize) {
+      toast.add({
+        title: 'Error',
+        description: `File size is too large, max size is 4 MB`,
+      })
+      return
+    }
 
-  const id = Math.random().toString(36).substring(7)
-  const uploadtoast = toast.add({
-    id,
-    title: 'Uploading',
-    description: `Uploading ${file.name}`,
-    timeout: 0,
-  })
-  try {
-    const res = await $fetch(`/api/flaff/${data.value?.data.uuid}/file`, {
-      method: 'POST',
-      body: formData,
-      query: {
-        parent: selected,
-      }
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('link', data.value?.data.ownerLink || '');
+    formData.append('targetId', selectedParent?.uuid || '');
+
+    const id = Math.random().toString(36).substring(7)
+    const uploadtoast = toast.add({
+      id,
+      title: 'Uploading',
+      description: `Uploading ${file.name}`,
+      timeout: 0,
     })
-    console.log('res', res)
-    refresh()
-    toast.update(id, {
-      title: 'Success',
-      description: `File uploaded`,
-      timeout: 5000,
-    })
-  } catch (error) {
-    console.error('error', error)
-    toast.update(id, {
-      title: 'Error',
-      description: `Failed to create new flaff`,
-      timeout: 5000,
-    })
+    try {
+      const res = await $fetch(`/api/flaff/${data.value?.data.uuid}/file`, {
+        method: 'POST',
+        body: formData,
+      })
+      console.log('res', res)
+      refresh()
+      toast.update(id, {
+        title: 'Success',
+        description: `File uploaded`,
+        timeout: 5000,
+      })
+    } catch (error) {
+      console.error('error', error)
+      toast.update(id, {
+        title: 'Error',
+        description: `Failed to create new flaff`,
+        timeout: 5000,
+      })
+    }
   }
 
   // reset file input
@@ -207,12 +214,14 @@ const $modalSetting = (() => {
   }
 })()
 
-const flaffUpdated = (reset = false) => {
+const flaffUpdated = async (reset = true) => {
   console.log('flaff updated')
-  refresh()
+  await refresh()
   if (reset) {
     if (data.value?.data?.files?.length) {
-      selectItem(data.value?.data?.files[0] as unknown as Item)
+      nextTick(() => {
+        selectItem(data.value?.data?.files[0] as unknown as Item)
+      })
     }
   }
 }
@@ -229,6 +238,7 @@ const changeFileByName = (name: string) => {
   let find: Item | undefined = undefined
   let files = items.value
   for (let i = 0; i < paths.length; i++) {
+    console.log('path', paths[i])
     const path = paths[i]
     find = files.find((file) => file.name === path)
     if (!find) break
@@ -236,6 +246,7 @@ const changeFileByName = (name: string) => {
       files = find.files as unknown as Item[]
     }
   }
+  console.log('find', find)
   if (find) {
     selectItem(find)
   }
@@ -424,6 +435,7 @@ const $modalCreateFolder = (() => {
                       type="file"
                       style="display: none;"
                       @change="handleUploadFile"
+                      multiple
                     />
                   </div>
                 </div>
