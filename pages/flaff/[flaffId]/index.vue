@@ -409,7 +409,7 @@ const $modalCreateFolder = (() => {
                 class="w-full flex-1 flex flex-col overflow-hidden max-h-[calc(100vh-4rem)]"
                 :ui="{
                   body: {
-                    base: 'flex-1 flex flex-col overflow-hidden',
+                    base: 'flex-1 flex flex-col relative overflow-x-hidden max-w-full',
                     padding: 'p-0 sm:p-0',
                   }
                 }"
@@ -451,7 +451,7 @@ const $modalCreateFolder = (() => {
                     </div>
                   </div>
                 </template>
-                <div class="flex-1 flex flex-col justify-start items-start overflow-y-auto px-6 pb-6 pt-4">
+                <div class="relative flex-1 flex flex-col justify-start items-start overflow-y-auto px-6 pb-6 pt-4 max-w-[270px]">
                   <ExplorerItem
                     :flaff="data.data"
                     :files="items"
