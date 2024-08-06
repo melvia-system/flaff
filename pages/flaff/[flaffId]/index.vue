@@ -351,7 +351,9 @@ const $modalCreateFolder = (() => {
 <template>
   <div class="w-full min-h-screen max-h-screen bg-slate-950 flex">
     <template v-if="!error && data?.data?.uuid">
-      <UContainer class="flex-1 flex py-8">
+      <div
+        class="flex-1 flex py-8 mx-auto max-w-screen-2xl px-8"
+      >
         <div class="flex flex-col flex-1 gap-4">
           <UCard>
             <div
@@ -449,7 +451,7 @@ const $modalCreateFolder = (() => {
                     </div>
                   </div>
                 </template>
-                <div class="flex-1 flex flex-col overflow-y-auto px-6 pb-6 pt-4">
+                <div class="flex-1 flex flex-col justify-start items-start overflow-y-auto px-6 pb-6 pt-4">
                   <ExplorerItem
                     :flaff="data.data"
                     :files="items"
@@ -476,7 +478,7 @@ const $modalCreateFolder = (() => {
             </div>
           </div>
         </div>
-      </UContainer>
+      </div>
     </template>
     <div v-else-if="error && error.statusCode == 401" class="flex-1 flex items-center justify-center">
       <div>

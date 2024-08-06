@@ -86,7 +86,7 @@ const onDragEnd = (item: Item) => (e: DragEvent) => {
 <template>
   <div
     v-for="(item, i) in files" :key="item.uuid + i"
-    class="flex-1 w-full flex flex-col"
+    class="w-full flex flex-col justify-start items-start"
     :style="{
       paddingRight: level > 1 ? (`${level * 0}px`) : (level > 0 ? `${level * 24}px` : undefined),
       // backgroundColor: `rgba(${level * 50}, ${level * 50}, ${level * 50}, 1)`,
