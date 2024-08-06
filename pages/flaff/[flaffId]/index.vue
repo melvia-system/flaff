@@ -397,49 +397,59 @@ const $modalCreateFolder = (() => {
             }"
           >
             <div
-              class=""
+              class="flex flex-col overflow-hidden"
               :class="{
                 'flex-1 max-w-[300px] w-[300px]': !isMobile,
                 'w-full': isMobile,
               }"
             >
-              <UCard class="w-full flex-1">
-                <div class="flex justify-between mb-4">
-                  <div class="font-semibold text-lg">
-                    Explorer
+              <UCard
+                class="w-full flex-1 flex flex-col overflow-hidden max-h-[calc(100vh-4rem)]"
+                :ui="{
+                  body: {
+                    base: 'flex-1 flex flex-col overflow-hidden',
+                    padding: 'p-0 sm:p-0',
+                  }
+                }"
+              >
+                <template #header>
+                  <div class="flex justify-between">
+                    <div class="font-semibold text-lg">
+                      Explorer
+                    </div>
+                    <div v-if="isOwner" class="flex gap-2 justify-end">
+                      <UTooltip text="Create Folder">
+                        <UButton
+                          trailing-icon="i-ph-folder"
+                          @click="$modalCreateFolder.isShow.value = true"
+                          size="xs"
+                        />
+                      </UTooltip>
+                      <UTooltip text="Upload File">
+                        <UButton
+                          icon="i-ph-upload"
+                          @click="triggerUploadFile"
+                          size="xs"
+                        />
+                      </UTooltip>
+                      <UTooltip text="Refresh">
+                        <UButton
+                          icon="i-ph-repeat"
+                          @click="refresh"
+                          size="xs"
+                        />
+                      </UTooltip>
+                      <input
+                        ref="fileInput"
+                        type="file"
+                        style="display: none;"
+                        @change="handleUploadFile"
+                        multiple
+                      />
+                    </div>
                   </div>
-                  <div v-if="isOwner" class="flex gap-2 justify-end">
-                    <UTooltip text="Create Folder">
-                      <UButton
-                        trailing-icon="i-ph-folder"
-                        @click="$modalCreateFolder.isShow.value = true"
-                        size="xs"
-                      />
-                    </UTooltip>
-                    <UTooltip text="Upload File">
-                      <UButton
-                        icon="i-ph-upload"
-                        @click="triggerUploadFile"
-                        size="xs"
-                      />
-                    </UTooltip>
-                    <UTooltip text="Refresh">
-                      <UButton
-                        icon="i-ph-repeat"
-                        @click="refresh"
-                        size="xs"
-                      />
-                    </UTooltip>
-                    <input
-                      ref="fileInput"
-                      type="file"
-                      style="display: none;"
-                      @change="handleUploadFile"
-                      multiple
-                    />
-                  </div>
-                </div>
-                <div class="flex flex-col">
+                </template>
+                <div class="flex-1 flex flex-col overflow-y-auto px-6 pb-6 pt-4">
                   <ExplorerItem
                     :flaff="data.data"
                     :files="items"

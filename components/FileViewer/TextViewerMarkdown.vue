@@ -92,7 +92,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex-1">
+  <div class="flex-1 max-w-full overflow-hidden">
     <div class="bg-[#0d1117] py-2 px-6 min-h-full">
       <div class="markdown-body" v-html="displayData"></div>
     </div>

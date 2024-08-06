@@ -201,6 +201,7 @@ const isMobile = computed(() => {
         <UIcon name="i-ph-circle-notch-duotone" class="animate-spin" />
       </div>
     </div>
+    
     <template v-else>
       <slot />
     </template>

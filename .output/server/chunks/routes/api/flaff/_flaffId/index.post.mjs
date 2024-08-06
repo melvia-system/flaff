@@ -19,7 +19,12 @@ const getExtFromFileName = (filename) => {
   return ext;
 };
 const index_post = defineEventHandler(async (event) => {
+  var _a;
   const data = await readMultipartFormData(event);
+  let targetId = (_a = data == null ? void 0 : data.find((item) => item.name === "targetId")) == null ? void 0 : _a.data.toString();
+  if (targetId) {
+    console.log("targetId", targetId);
+  }
   const flaffId = await getFlaffIdFromParam(event);
   const flaff = await findFlaffByMergeId(flaffId);
   const file = data == null ? void 0 : data.find((item) => item.name === "file");
@@ -43,6 +48,20 @@ const index_post = defineEventHandler(async (event) => {
       const mimeType = file.type || "text/plain";
       const ext = getExtFromFileName(file.filename || "") || mimeType.split("/").pop() || "txt";
       const uuid = v7();
+      const query = await tx.file.findFirst({
+        where: {
+          name: file.filename,
+          flaffUuid: flaff.uuid
+        }
+      });
+      if (query) {
+        await storage.removeItem(uuid);
+        await tx.file.delete({
+          where: {
+            uuid: query.uuid
+          }
+        });
+      }
       const size = file.data.length;
       await storage.setItemRaw(uuid, file.data);
       return await tx.file.create({
@@ -57,7 +76,14 @@ const index_post = defineEventHandler(async (event) => {
             connect: {
               uuid: flaff.uuid
             }
-          }
+          },
+          ...targetId ? {
+            parent: {
+              connect: {
+                uuid: targetId
+              }
+            }
+          } : {}
         }
       });
     });
